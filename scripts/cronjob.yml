@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pod-cleanup
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cleanup
+            image: bitnami/kubectl
+            command: ["/bin/sh", "-c", "script.sh"]
+          restartPolicy: OnFailure

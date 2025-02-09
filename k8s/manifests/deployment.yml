@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: testacr.azurecr.io/myapp:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: azure-storage
+          mountPath: "/usr/share/nginx/html"
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+      volumes:
+      - name: azure-storage
+        persistentVolumeClaim:
+          claimName: azurefile-pvc
