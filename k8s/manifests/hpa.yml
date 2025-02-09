@@ -1,5 +1,5 @@
 apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+kind: HorizontalPodAutoscaler #Horizontal Pod Autoscaler automatically adjusts the number of replicas (pods) in a deployment based on CPU utilization.
 metadata:
   name: myapp-hpa
 spec:
@@ -16,3 +16,4 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
+#If the average CPU utilization exceeds 50%, the HPA will scale up (add more pods), and if it goes below 50%, it will scale down
