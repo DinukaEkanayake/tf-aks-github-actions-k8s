@@ -17,9 +17,6 @@ spec:
         image: testacr.azurecr.io/myapp:latest
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: azure-storage
-          mountPath: "/usr/share/nginx/html" #Mounts the Azure File Storage volume inside the container at "/usr/share/nginx/html"
         resources:
           requests: #Minimum resources required for the container to start
             cpu: "250m"
@@ -33,5 +30,4 @@ spec:
           claimName: azurefile-pvc
         #A PVC ensures data persists across Pod restarts, deletions, and rescheduling.
         #If a Pod crashes or restarts, any data inside its container is lost.
-        #PVC is a Request for storage by a Pod.PV is a Physical storage
-        #data stored inside the Pod at /usr/share/nginx/html will persist even if the Pod is deleted or restarted.
+        #PVC Requests for storage by a Pod.PV is a Physical storage
