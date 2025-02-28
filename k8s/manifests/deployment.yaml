@@ -28,7 +28,7 @@ spec:
           #       key: APP_ENV
           - name: APP-SECRET
             valueFrom: 
-              secretKeyReference:
+              secretKeyRef:
                 name: myapp-secret
                 key: password
         resources:

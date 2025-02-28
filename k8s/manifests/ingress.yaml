@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: myapp-ingress
   annotations:
-    kubernetes.io/ingress.class: "myapp"
+    spec.ingressClassName: "myapp"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   tls:
