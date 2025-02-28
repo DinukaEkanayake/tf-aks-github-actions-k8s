@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: testacr.azurecr.io/myrepository/myapp:latest
+        image: platformengtestregistry.azurecr.io/myrepository/myapp:latest
         ports:
         - containerPort: 80
         volumeMounts:
