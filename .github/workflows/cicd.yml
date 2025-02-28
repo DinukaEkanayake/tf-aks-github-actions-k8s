@@ -42,7 +42,7 @@ jobs:
 
     # - name: Deploy to AKS
     #   run: |
-    #     az aks get-credentials --resource-group rg --name platformengtestresourcegroup
+    #     az aks get-credentials --resource-group platformengtestresourcegroup --name platformengtestakscluster
     #     kubectl apply -f k8s/
     - name: Deploy all manifests in k8s/ folder
       run: kubectl apply -f k8s/manifests

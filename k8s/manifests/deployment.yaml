@@ -41,7 +41,7 @@ spec:
       volumes:
       - name: azure-storage #A PVC ensures data persists across Pod restarts, deletions, and rescheduling.
         persistentVolumeClaim: #If a Pod crashes or restarts, any data inside its container is lost.
-          claimName: azurefile-pvc #PVC Requests for storage by a Pod.PV is a Physical storage
+          claimName: myapp-pvc #PVC Requests for storage by a Pod.PV is a Physical storage
       - name: app-environment
         configMap:
           name: myapp-config
