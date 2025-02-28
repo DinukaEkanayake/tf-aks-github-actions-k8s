@@ -25,9 +25,9 @@ jobs:
 
     - name: Build & Push Docker Image
       run: |
-        az acr login --name testacr
-        docker build -t testacr.azurecr.io/myrepository/myapp:${{ github.sha }} .
-        docker push testacr.azurecr.io/myrepository/myapp:${{ github.sha }}
+        az acr login --name platformengtestregistry
+        docker build -t platformengtestregistry.azurecr.io/myrepository/myapp:${{ github.sha }} .
+        docker push platformengtestregistry.azurecr.io/myrepository/myapp:${{ github.sha }}
 
     - name: Set AKS context
       id: set-context
