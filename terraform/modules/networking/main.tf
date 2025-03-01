@@ -6,11 +6,19 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "aks_subnet" {
-  name                 = var.subnet_name
-  resource_group_name = var.resource_group_name
+  name                 = var.aks_subnet_name
+  resource_group_name =  var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
+
+resource "azurerm_subnet" "appgw_subnet" {
+  name                 = var.appgw_subnet_name
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
+
 resource "azurerm_network_security_group" "nsg" {
   name                = var.nsg_name
   location            = var.resource_group_location

@@ -11,7 +11,7 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
     vm_size    = "Standard_DS2_v2" #2 vCPUs, 7GB RAM
     zones = [ 3 ] 
     type = "VirtualMachineScaleSets" #Uses VMSS (Virtual Machine Scale Sets) for auto-scaling.
-    vnet_subnet_id = var.vnet_subnet_id
+    vnet_subnet_id = var.vnet_aks_subnet_id
 
   }
   
@@ -19,6 +19,12 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
   identity {
     type = "SystemAssigned"
   }
+
+  # Enable AGIC with existing App Gateway
+  ingress_application_gateway {
+    gateway_id = var.appgw_id
+  }
+
   #restricting access to kubectl commands
   role_based_access_control_enabled = true
 

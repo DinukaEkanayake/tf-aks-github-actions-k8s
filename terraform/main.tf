@@ -10,9 +10,9 @@ module "aks-cluster" {
   cluster_name = var.cluster_name
   node_count = var.node_count
   kubernetes_version = var.kubernetes_version
-  vnet_subnet_id = module.networking.vnet_subnet_id
+  vnet_aks_subnet_id = module.networking.vnet_aks_subnet_id
   log_analytics_workspace_id  = module.monitoring.log_analytics_workspace_id #Passes a Log Analytics workspace from the monitoring module for AKS logging.
-
+  appgw_id = module.appgw.appgw_id
   depends_on = [ 
     azurerm_resource_group.rg
    ]
@@ -65,5 +65,15 @@ resource "azurerm_role_assignment" "aks_acr" {
   role_definition_name = "AcrPull"
   principal_id         = module.aks-cluster.aks_principal_id #Retrieves the AKS service principal ID from the AKS module
   skip_service_principal_aad_check = true #Bypasses an AAD (Azure Active Directory) check to avoid issues when using managed identities.
+}
+
+module "appgw" {
+  source = "./modules/appgw"
+  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_location = azurerm_resource_group.rg.location
+  vnet_appgw_subnet_id = module.networking.vnet_appgw_subnet_id
+  depends_on = [ 
+    azurerm_resource_group.rg
+   ]
 }
 

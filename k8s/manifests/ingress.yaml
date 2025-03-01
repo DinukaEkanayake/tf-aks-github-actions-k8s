@@ -4,7 +4,7 @@ metadata:
   name: myapp-ingress
   namespace: myapp-ns
   annotations:
-    spec.ingressClassName: "myapp"
+    kubernetes.io/ingress.class: azure/application-gateway
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   tls:

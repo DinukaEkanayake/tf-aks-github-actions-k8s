@@ -9,8 +9,11 @@ variable "resource_group_location" {
 variable "vnet_name" { 
   default = "aks-vnet"
 }
-variable "subnet_name" { 
+variable "aks_subnet_name" { 
   default = "aks-subnet" 
+}
+variable "appgw_subnet_name" { 
+  default = "appgw-subnet" 
 }
 variable "nsg_name" {
   default = "aks-nsg"

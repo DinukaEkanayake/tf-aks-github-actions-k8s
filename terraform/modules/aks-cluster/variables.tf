@@ -22,11 +22,15 @@ variable "dns_prefix" {
   type = string
   default = "platform-eng-test"
 }
-variable "vnet_subnet_id" {
+variable "vnet_aks_subnet_id" {
   type = string
-  description = "Virtual network ID from the networking module"
+  description = "Virtual network aks subnet ID from the networking module"
+}
+variable "appgw_id" {
+  type = string
+  description = "Appgw ID from the appgw module"
 }
 variable "log_analytics_workspace_id" {
   type        = string
-  description = "Log Analytics Workspace ID"
+  description = "Log Analytics Workspace ID from monitoring"
 }
