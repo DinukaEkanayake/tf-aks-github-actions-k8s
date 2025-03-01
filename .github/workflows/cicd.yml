@@ -40,6 +40,16 @@ jobs:
       id: install-kubectl
       uses: azure/setup-kubectl@v3
 
-    - name: Deploy all manifests in k8s/ folder
+    - name: Delete Old Kubernetes Manifests
+      continue-on-error: true  # Ensures the pipeline doesn't fail if resources don't exist
+      run: |
+        kubectl delete -f k8s/manifests --ignore-not-found=true
+
+    - name: Deploy all manifests in k8s/manifests folder
       run: kubectl apply -f k8s/manifests
+
+    - name: Check Deployment Status
+      run: |
+        kubectl get pods -n myapp-ns -o wide
+        kubectl get svc -n myapp-ns -o wide
 
