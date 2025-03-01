@@ -15,7 +15,7 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   }
   
-  #allows AKS to securely interact with Azure resources without needing service principal credentials.
+  #allows AKS cluster to securely interact with Azure resources without needing service principal credentials.
   identity {
     type = "SystemAssigned"
   }

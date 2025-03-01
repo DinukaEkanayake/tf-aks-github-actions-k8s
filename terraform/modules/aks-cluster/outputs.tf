@@ -8,8 +8,11 @@ output "aks-cluster_id" {
 }
 #Azure AD Principal ID represents the Managed Identity used by AKS to access other Azure services securely.
 output "aks_principal_id" {
-  value = azurerm_kubernetes_cluster.aks-cluster.identity[0].principal_id
+  value = azurerm_kubernetes_cluster.aks-cluster.kubelet_identity[0].object_id
 }
 output "aks_cluster_name" {
   value = azurerm_kubernetes_cluster.aks-cluster.name
+}
+output "aks_node_rg" {
+  value = azurerm_kubernetes_cluster.aks-cluster.node_resource_group
 }

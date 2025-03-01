@@ -61,9 +61,9 @@ module "monitoring" {
 
 # Grants permission to AKS to pull container images from ACR
 resource "azurerm_role_assignment" "aks_acr" {
-  principal_id         = module.aks-cluster.aks_principal_id #Retrieves the AKS service principal ID from the AKS module
-  role_definition_name = "AcrPull"
   scope                = module.acr.acr_id
+  role_definition_name = "AcrPull"
+  principal_id         = module.aks-cluster.aks_principal_id #Retrieves the AKS service principal ID from the AKS module
   skip_service_principal_aad_check = true #Bypasses an AAD (Azure Active Directory) check to avoid issues when using managed identities.
 }
 
