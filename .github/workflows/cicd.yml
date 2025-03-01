@@ -26,8 +26,8 @@ jobs:
     - name: Build & Push Docker Image
       run: |
         az acr login --name platformengtestregistry
-        docker build -t platformengtestregistry.azurecr.io/myrepository/myapp:${{ github.sha }} .
-        docker push platformengtestregistry.azurecr.io/myrepository/myapp:${{ github.sha }}
+        docker build -t platformengtestregistry.azurecr.io/myrepository/myapp:latest .
+        docker push platformengtestregistry.azurecr.io/myrepository/myapp:latest
 
     - name: Set AKS context
       id: set-context
@@ -40,10 +40,6 @@ jobs:
       id: install-kubectl
       uses: azure/setup-kubectl@v3
 
-    # - name: Deploy to AKS
-    #   run: |
-    #     az aks get-credentials --resource-group platformengtestresourcegroup --name platformengtestakscluster
-    #     kubectl apply -f k8s/
     - name: Deploy all manifests in k8s/ folder
       run: kubectl apply -f k8s/manifests
 
