@@ -12,7 +12,7 @@ module "aks-cluster" {
   kubernetes_version = var.kubernetes_version
   vnet_aks_subnet_id = module.networking.vnet_aks_subnet_id
   log_analytics_workspace_id  = module.monitoring.log_analytics_workspace_id #Passes a Log Analytics workspace from the monitoring module for AKS logging.
-  vnet_appgw_subnet_id = module.networking.vnet_appgw_subnet_id
+  appgw_subnet_id = module.networking.vnet_appgw_subnet_id
   depends_on = [ 
     azurerm_resource_group.rg
    ]
@@ -83,4 +83,3 @@ resource "azurerm_role_assignment" "contributor-to-aks-ingress-on-appgw-vnet" {
   role_definition_name = "Contributor"
   principal_id         = module.aks-cluster.aks_uai_appgw_object_id
 }
-

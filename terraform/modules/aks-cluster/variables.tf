@@ -26,9 +26,9 @@ variable "vnet_aks_subnet_id" {
   type = string
   description = "Virtual network aks subnet ID from the networking module"
 }
-variable "vnet_appgw_subnet_id" {
+variable "appgw_subnet_id" {
   type = string
-  description = "Virtual network appgw subnet ID from the networking module"
+  description = "appgw ID from the appgw module"
 }
 variable "log_analytics_workspace_id" {
   type        = string

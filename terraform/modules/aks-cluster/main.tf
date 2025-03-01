@@ -22,7 +22,7 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   # Enable AGIC with existing App Gateway
   ingress_application_gateway {
-    subnet_id = var.vnet_appgw_subnet_id
+    subnet_id = var.appgw_subnet_id
   }
 
   #restricting access to kubectl commands
