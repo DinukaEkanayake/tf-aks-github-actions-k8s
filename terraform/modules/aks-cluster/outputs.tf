@@ -16,3 +16,8 @@ output "aks_cluster_name" {
 output "aks_node_rg" {
   value = azurerm_kubernetes_cluster.aks-cluster.node_resource_group
 }
+
+# Required to set IAM role on appgw subnet.
+output "aks_uai_appgw_object_id" { 
+  value = azurerm_kubernetes_cluster.aks-cluster.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id 
+}
