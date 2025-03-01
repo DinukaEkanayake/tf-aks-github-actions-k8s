@@ -2,6 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler #Horizontal Pod Autoscaler automatically adjusts the number of replicas (pods) in a deployment based on CPU utilization.
 metadata:
   name: myapp-hpa
+  namespace: myapp-ns
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

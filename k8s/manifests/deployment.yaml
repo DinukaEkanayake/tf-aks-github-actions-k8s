@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myapp
+  namespace: myapp-ns
 spec:
   replicas: 3
   selector:
@@ -20,17 +21,17 @@ spec:
         volumeMounts:
           - name: app-environment
             mountPath: /opt
-        env:  #if want to use env instead of volumemounts
+        # env:  #if want to use env instead of volumemounts
           # - name: APP-ENV
           #   valueFrom: 
           #     configMapKeyRef:
           #       name: myapp-config
           #       key: APP_ENV
-          - name: APP-SECRET
-            valueFrom: 
-              secretKeyRef:
-                name: myapp-secret
-                key: password
+          # - name: APP-SECRET
+          #   valueFrom: 
+          #     secretKeyRef:
+          #       name: myapp-secret
+          #       key: password
         resources:
           requests: #Minimum resources required for the container to start
             cpu: "250m"

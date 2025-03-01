@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myapp-ingress
+  namespace: myapp-ns
   annotations:
     spec.ingressClassName: "myapp"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
