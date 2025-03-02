@@ -19,53 +19,93 @@ resource "azurerm_subnet" "appgw_subnet" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-resource "azurerm_network_security_group" "nsg" {
-  name                = var.nsg_name
+# Create NSG for AKS Subnet
+resource "azurerm_network_security_group" "aks_nsg" {
+  name                = "aks-subnet-nsg"
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
+
+  # Allow inbound traffic from AppGW Subnet
+  security_rule {
+    name                       = "Allow-AppGW-to-AKS"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  # Allow Kubernetes API Server (Required for AKS)
+  security_rule {
+    name                       = "Allow-Kube-API"
+    priority                   = 1002
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  # Allow SSH from trusted IPs
+  security_rule {
+    name                        = "AllowSSH"
+    priority                    = 1003
+    direction                   = "Inbound"
+    access                      = "Allow"
+    protocol                    = "Tcp"
+    source_port_range           = "*"
+    destination_port_range      = "22"
+    source_address_prefix       = "10.0.0.0/16"  # Replace with your IP
+    destination_address_prefix  = "*"
+  }
 }
 
-# Allow SSH from trusted IPs
-resource "azurerm_network_security_rule" "allow_ssh" {
-  name                        = "AllowSSH"
-  priority                    = 1001
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "22"
-  source_address_prefix       = "10.0.0.0/16"  # Replace with your IP
-  destination_address_prefix  = "*"
-  resource_group_name         = var.resource_group_name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+# Associate NSG with AKS Subnet
+resource "azurerm_subnet_network_security_group_association" "aks_nsg_assoc" {
+  subnet_id                 = azurerm_subnet.aks_subnet.id
+  network_security_group_id = azurerm_network_security_group.aks_nsg.id
 }
 
-# Allow Kubernetes API (only from trusted IPs)
-resource "azurerm_network_security_rule" "allow_k8s_api" {
-  name                        = "AllowK8sAPI"
-  priority                    = 1002
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "443"
-  source_address_prefix       = "10.0.0.0/16" # Replace with your IP
-  destination_address_prefix  = "*"
-  resource_group_name         = var.resource_group_name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+# Create NSG for AppGW Subnet
+resource "azurerm_network_security_group" "appgw_nsg" {
+  name                = "appgw-subnet-nsg"
+  location            = var.resource_group_location
+  resource_group_name = var.resource_group_name
+
+  security_rule {
+     name                        = "AllowGatewayManagerInbound"
+     description                 = "Allow Azure application GatewayManager on management ports"
+     priority                    = 2510
+     direction                   = "Inbound"
+     access                      = "Allow"
+     protocol                    = "Tcp"
+     source_port_range           = "*"
+     source_address_prefix       = "GatewayManager"
+     destination_port_range      = "65200-65535"
+     destination_address_prefix  = "*"
+   }
+
+  # Allow outbound traffic to AKS Subnet
+  security_rule {
+    name                       = "Allow-AppGW-Outbound-to-AKS"
+    priority                   = 1004
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = azurerm_subnet.aks_subnet.address_prefixes[0]
+  }
 }
 
-# Restrict all other traffic
-resource "azurerm_network_security_rule" "deny_all" {
-  name                        = "DenyAll"
-  priority                    = 4096
-  direction                   = "Inbound"
-  access                      = "Deny"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = var.resource_group_name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+# Associate NSG with AppGW Subnet
+resource "azurerm_subnet_network_security_group_association" "appgw_nsg_assoc" {
+  subnet_id                 = azurerm_subnet.appgw_subnet.id
+  network_security_group_id = azurerm_network_security_group.appgw_nsg.id
 }

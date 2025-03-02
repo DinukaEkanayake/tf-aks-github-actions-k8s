@@ -22,13 +22,13 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
 
   # Enable AGIC with existing App Gateway
   ingress_application_gateway {
-    subnet_id = var.appgw_subnet_id
+    gateway_id = var.appgw_id
   }
 
   #restricting access to kubectl commands
   role_based_access_control_enabled = true
 
-  #Configures the networking settings for AKS
+  #Configure Azure CNI Plugin - Allows Kubernetes pods to get IPs from the VNet
   network_profile {
     network_plugin = "azure" #Uses the Azure CNI (Container Network Interface) for better integration with Azure VNet.
     load_balancer_sku = "standard" #Uses the Standard Load Balancer for high availability

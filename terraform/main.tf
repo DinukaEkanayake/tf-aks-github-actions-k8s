@@ -13,6 +13,7 @@ module "aks-cluster" {
   vnet_aks_subnet_id = module.networking.vnet_aks_subnet_id
   log_analytics_workspace_id  = module.monitoring.log_analytics_workspace_id #Passes a Log Analytics workspace from the monitoring module for AKS logging.
   appgw_subnet_id = module.networking.vnet_appgw_subnet_id
+  appgw_id = module.appgw.appgw_id
   depends_on = [ 
     azurerm_resource_group.rg
    ]
@@ -77,9 +78,16 @@ module "appgw" {
    ]
 }
 
-#to set IAM role on appgw subnet
-resource "azurerm_role_assignment" "contributor-to-aks-ingress-on-appgw-vnet" {
-  scope                = module.networking.vnet_id
-  role_definition_name = "Contributor"
-  principal_id         = module.aks-cluster.aks_uai_appgw_object_id
+# Create User-Assigned Managed Identity for AGIC
+resource "azurerm_user_assigned_identity" "agic_identity" {
+  name                = "agic-identity"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+}
+
+# Assign Network Contributor Role to AGIC Managed Identity to configure networking on Application Gateway & Subnet
+resource "azurerm_role_assignment" "agic_role" {
+  scope                = module.appgw.appgw_id
+  role_definition_name = "Network Contributor"
+  principal_id         = azurerm_user_assigned_identity.agic_identity.principal_id
 }

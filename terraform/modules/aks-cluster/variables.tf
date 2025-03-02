@@ -28,6 +28,10 @@ variable "vnet_aks_subnet_id" {
 }
 variable "appgw_subnet_id" {
   type = string
+  description = "appgw subnet ID from the networking module"
+}
+variable "appgw_id" {
+  type = string
   description = "appgw ID from the appgw module"
 }
 variable "log_analytics_workspace_id" {

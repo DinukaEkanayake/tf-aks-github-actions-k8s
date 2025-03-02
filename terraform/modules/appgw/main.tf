@@ -14,11 +14,15 @@ resource "azurerm_application_gateway" "appgw" {
   sku {
   name = "Standard_v2"
   tier = "Standard_v2"
-  capacity = 2
-}
+  }
+
+  autoscale_configuration {
+    min_capacity = 2
+    max_capacity = 10
+  }
 
   gateway_ip_configuration {
-    name      = "gateway-ip-config"
+    name      = "appGatewayIpConfig"
     subnet_id = var.vnet_appgw_subnet_id
   }
 
@@ -28,12 +32,12 @@ resource "azurerm_application_gateway" "appgw" {
   }
 
   frontend_port {
-    name = "frontend-port"
+    name = "httpPort"
     port = 80
   }
 
   backend_address_pool {
-    name = "backend-pool"
+    name = "appGatewayBackendPool"
   }
 
   backend_http_settings {
@@ -42,22 +46,22 @@ resource "azurerm_application_gateway" "appgw" {
     path                  = "/"
     port                  = 80
     protocol              = "Http"
-    request_timeout       = 60
+    request_timeout       = 20
   }
 
   http_listener {
-    name                           = "http-listener"
+    name                           = "httpListener"
     frontend_ip_configuration_name = "frontend-ip"
-    frontend_port_name             = "frontend-port"
+    frontend_port_name             = "httpPort"
     protocol                       = "Http"
   }
 
   request_routing_rule {
-    name                       = "http-rule"
+    name                       = "httpRule"
     rule_type                  = "Basic"
     priority                   = 100
-    http_listener_name         = "http-listener"
-    backend_address_pool_name  = "backend-pool"
+    http_listener_name         = "httpListener"
+    backend_address_pool_name  = "appGatewayBackendPool"
     backend_http_settings_name = "backend-http-setting"
   }
   
