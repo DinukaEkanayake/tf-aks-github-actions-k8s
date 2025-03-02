@@ -31,17 +31,30 @@ resource "azurerm_network_security_group" "aks_nsg" {
     priority                   = 1001
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+    protocol                   = "Tcp"
+    source_address_prefix      = "10.0.2.0/24"
+    source_port_range           = "*" 
+    destination_address_prefix  = "10.0.1.0/24"
+    destination_port_ranges     = ["80", "443"]
   }
+
+  security_rule {
+    name                        = "AllowAKStoAppGw"
+    priority                    = 1002
+    direction                   = "Outbound"
+    access                      = "Allow"
+    protocol                    = "Tcp"
+    source_address_prefix       = "10.0.1.0/24"
+    source_port_range           = "*"
+    destination_address_prefix  = "10.0.2.0/24"
+    destination_port_ranges     = ["65200-65535"]
+  }
+
 
   # Allow Kubernetes API Server (Required for AKS)
   security_rule {
     name                       = "Allow-Kube-API"
-    priority                   = 1002
+    priority                   = 1003
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -54,7 +67,7 @@ resource "azurerm_network_security_group" "aks_nsg" {
   # Allow SSH from trusted IPs
   security_rule {
     name                        = "AllowSSH"
-    priority                    = 1003
+    priority                    = 1004
     direction                   = "Inbound"
     access                      = "Allow"
     protocol                    = "Tcp"
@@ -93,7 +106,7 @@ resource "azurerm_network_security_group" "appgw_nsg" {
   # Allow outbound traffic to AKS Subnet
   security_rule {
     name                       = "Allow-AppGW-Outbound-to-AKS"
-    priority                   = 1004
+    priority                   = 1005
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "*"
