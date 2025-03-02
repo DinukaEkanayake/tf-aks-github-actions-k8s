@@ -17,8 +17,10 @@ spec:
       - path: /   #Routes all traffic (/) to myapp-service
         pathType: Prefix
         backend:
-          serviceName: myapp-service #Forwards traffic to the internal Kubernetes Service myapp-service
-          servicePort: 80
+          service:
+            name: myapp-service   #Forwards traffic to the internal Kubernetes Service myapp-service
+            port:
+              number: 80
 
 #A user accesses https://myapp.test.com/ in a browser.The Ingress Controller receives the request.
 #It checks the rules in the Ingress configuration.
