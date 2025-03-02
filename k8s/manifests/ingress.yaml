@@ -10,6 +10,7 @@ spec:
   # - hosts:
   #   - myapp.test.com
     #secretName: myapp-tls   #Stores the SSL certificate in a Kubernetes Secret named myapp-tls
+  ingressClassName: azure-application-gateway
   rules:
   - host: myapp.test.com       #Routes requests from myapp.test.com to the internal Kubernetes service myapp-servic
     http:
