@@ -3,12 +3,14 @@ kind: Ingress
 metadata:
   name: myapp-ingress
   namespace: myapp-ns
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
 spec:
   # tls:
   # - hosts:
   #   - myapp.test.com
     #secretName: myapp-tls   #Stores the SSL certificate in a Kubernetes Secret named myapp-tls
-  ingressClassName: azure-application-gateway
+  # ingressClassName: azure-application-gateway
   rules:
   - host: myapp.test.com       #Routes requests from myapp.test.com to the internal Kubernetes service myapp-servic
     http:
