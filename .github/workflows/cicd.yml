@@ -50,6 +50,6 @@ jobs:
 
     - name: Check Deployment Status
       run: |
-        kubectl get pods -n myapp-ns -o wide
-        kubectl get svc -n myapp-ns -o wide
+        kubectl get pods -n myapp -o wide
+        kubectl get svc -n myapp -o wide
 
