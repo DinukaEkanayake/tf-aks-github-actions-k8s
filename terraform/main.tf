@@ -78,13 +78,6 @@ module "appgw" {
    ]
 }
 
-# Create User-Assigned Managed Identity for AGIC
-# resource "azurerm_user_assigned_identity" "agic_identity" {
-#   name                = "agic-identity"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   location            = azurerm_resource_group.rg.location
-# }
-
 # Assign the "Network Contributor" role to the Managed Identity for the Public IP
 resource "azurerm_role_assignment" "agic_network_contributor" {
   scope                = module.appgw.appgw_pip_id

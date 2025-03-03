@@ -28,7 +28,7 @@ resource "azurerm_network_security_group" "aks_nsg" {
   # Allow inbound traffic from AppGW Subnet
   security_rule {
     name                       = "Allow-AppGW-to-AKS"
-    priority                   = 1001
+    priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
