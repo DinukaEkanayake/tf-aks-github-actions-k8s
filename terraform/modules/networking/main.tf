@@ -32,9 +32,9 @@ resource "azurerm_network_security_group" "aks_nsg" {
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
-    source_address_prefix      = "10.0.2.0/24"
+    source_address_prefix      = azurerm_subnet.appgw_subnet.address_prefixes[0]
     source_port_range           = "*" 
-    destination_address_prefix  = "10.0.1.0/24"
+    destination_address_prefix  = azurerm_subnet.aks_subnet.address_prefixes[0]
     destination_port_ranges     = ["80", "443"]
   }
 
@@ -44,9 +44,9 @@ resource "azurerm_network_security_group" "aks_nsg" {
     direction                   = "Outbound"
     access                      = "Allow"
     protocol                    = "Tcp"
-    source_address_prefix       = "10.0.1.0/24"
+    source_address_prefix       = azurerm_subnet.aks_subnet.address_prefixes[0]
     source_port_range           = "*"
-    destination_address_prefix  = "10.0.2.0/24"
+    destination_address_prefix  = azurerm_subnet.appgw_subnet.address_prefixes[0]
     destination_port_ranges     = ["65200-65535"]
   }
 
