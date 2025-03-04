@@ -96,3 +96,9 @@ resource "azurerm_role_assignment" "appgw_network_contributor" {
   role_definition_name  = "Network Contributor"
   principal_id   = module.aks-cluster.aks_uai_appgw_object_id
 }
+
+resource "azurerm_role_assignment" "sp_reader" {
+  scope                = module.appgw.appgw_pip_id
+  role_definition_name = "Reader"
+  principal_id         = module.aks-cluster.aks_uai_appgw_object_id
+}
