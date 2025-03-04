@@ -13,14 +13,15 @@ resource "azurerm_kubernetes_cluster" "aks-cluster" {
   sku_tier = "Free"
 
   default_node_pool {
-    name       = "agentpool"
+    name       = "nodepool"
     node_count =  var.node_count
     vm_size    = "Standard_DS2_v2" #2 vCPUs, 7GB RAM
     zones = [ 3 ] 
     # type = "VirtualMachineScaleSets" #Uses VMSS (Virtual Machine Scale Sets) for auto-scaling.
-    auto_scaling_enabled = true
+    # auto_scaling_enabled = true
     vnet_subnet_id = var.vnet_aks_subnet_id
-
+    # max_count = 1
+    # min_count = 1
   }
   
   #allows AKS cluster to securely interact with Azure resources without needing service principal credentials.
