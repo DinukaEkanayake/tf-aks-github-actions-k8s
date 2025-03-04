@@ -1,23 +1,32 @@
+resource "azurerm_user_assigned_identity" "aks-access" {
+  name = "aks-access"
+  resource_group_name = var.resource_group_name
+  location = var.resource_group_location
+}
+
 resource "azurerm_kubernetes_cluster" "aks-cluster" {
   name = var.cluster_name
   location = var.resource_group_location
   resource_group_name = var.resource_group_name
   kubernetes_version = var.kubernetes_version
   dns_prefix          = var.dns_prefix #Used for creating the default DNS name of the Kubernetes API server.
+  sku_tier = "Free"
 
   default_node_pool {
     name       = "agentpool"
     node_count =  var.node_count
     vm_size    = "Standard_DS2_v2" #2 vCPUs, 7GB RAM
     zones = [ 3 ] 
-    type = "VirtualMachineScaleSets" #Uses VMSS (Virtual Machine Scale Sets) for auto-scaling.
+    # type = "VirtualMachineScaleSets" #Uses VMSS (Virtual Machine Scale Sets) for auto-scaling.
+    auto_scaling_enabled = true
     vnet_subnet_id = var.vnet_aks_subnet_id
 
   }
   
   #allows AKS cluster to securely interact with Azure resources without needing service principal credentials.
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    identity_ids = [ azurerm_user_assigned_identity.aks-access.id ]
   }
 
   # Enable AGIC with existing App Gateway

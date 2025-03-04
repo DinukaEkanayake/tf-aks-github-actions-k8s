@@ -17,6 +17,7 @@ variable "kubernetes_version" {
 variable "node_count" {
   type = number
   description = "Number of AKS worker nodes"
+  default = 3
 }
 variable "dns_prefix" {
   type = string

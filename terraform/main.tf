@@ -80,19 +80,19 @@ module "appgw" {
 
 # Assign the "Network Contributor" role to the Managed Identity for the Public IP
 resource "azurerm_role_assignment" "agic_network_contributor" {
-  scope                = module.appgw.appgw_pip_id
+  scope                = module.networking.vnet_id
   role_definition_name = "Network Contributor"
-  principal_id         = module.aks-cluster.aks_uai_appgw_object_id
+  principal_id         = module.aks-cluster.uai_principalid
 }
 
-resource "azurerm_role_assignment" "contributor_role" {
+resource "azurerm_role_assignment" "appgw_contributor" {
   scope           = module.appgw.appgw_id
   role_definition_name  = "Contributor"
   principal_id   = module.aks-cluster.aks_uai_appgw_object_id
 }
 
-resource "azurerm_role_assignment" "network_contributor_role" {
-  scope           = module.networking.vnet_id
+resource "azurerm_role_assignment" "appgw_network_contributor" {
+  scope           = module.networking.vnet_appgw_subnet_id
   role_definition_name  = "Network Contributor"
   principal_id   = module.aks-cluster.aks_uai_appgw_object_id
 }

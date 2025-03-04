@@ -8,7 +8,7 @@ output "aks-cluster_id" {
 }
 #Azure AD Principal ID represents the Managed Identity used by AKS to access other Azure services securely.
 output "aks_principal_id" {
-  value = azurerm_kubernetes_cluster.aks-cluster.kubelet_identity[0].object_id
+  value = azurerm_kubernetes_cluster.aks-cluster.kubelet_identity.0.object_id
 }
 output "aks_cluster_name" {
   value = azurerm_kubernetes_cluster.aks-cluster.name
@@ -19,5 +19,8 @@ output "aks_node_rg" {
 
 # Required to set IAM role on appgw subnet.
 output "aks_uai_appgw_object_id" { 
-  value = azurerm_kubernetes_cluster.aks-cluster.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id 
+  value = azurerm_kubernetes_cluster.aks-cluster.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id
+}
+output "uai_principalid" {
+  value = azurerm_user_assigned_identity.aks-access.principal_id
 }
