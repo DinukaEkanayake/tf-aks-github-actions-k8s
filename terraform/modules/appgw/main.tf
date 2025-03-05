@@ -2,8 +2,19 @@ resource "azurerm_public_ip" "appgw_pip" {
   name                = "${var.appgw_name}-pip"
   location            = var.resource_group_location
   resource_group_name = var.resource_group_name
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  allocation_method   = var.pip_allocation_method
+  sku                 = var.pip_sku
+}
+
+# Create local variables for Application Gateway
+locals {
+  gateway_ip_configuration_name  = "${var.appgw_name}-configuration"
+  frontend_port_name             = "${var.appgw_name}-feport"
+  frontend_ip_configuration_name = "${var.appgw_name}-feip"
+  backend_address_pool_name      = "${var.appgw_name}-beap"
+  backend_http_settings_name     = "${var.appgw_name}-be-http"
+  http_listener_name             = "${var.appgw_name}-http-listner"
+  request_routing_rule_name      = "${var.appgw_name}-rqrt-rule"
 }
 
 resource "azurerm_application_gateway" "appgw" {
@@ -12,63 +23,61 @@ resource "azurerm_application_gateway" "appgw" {
   resource_group_name = var.resource_group_name
 
   sku {
-  name = "Standard_v2"
-  tier = "Standard_v2"
-  capacity = 1
+  name = var.appgtw_sku_size
+  tier = var.appgtw_sku_tier
+  capacity = var.appgtw_sku_capacity
   }
 
   gateway_ip_configuration {
-    name      = "appGatewayIpConfig"
+    name      = local.gateway_ip_configuration_name
     subnet_id = var.vnet_appgw_subnet_id
   }
 
   frontend_ip_configuration {
-    name                 = "frontend-ip"
+    name                 = local.frontend_ip_configuration_name
     public_ip_address_id = azurerm_public_ip.appgw_pip.id
   }
 
   frontend_port {
-    name = "frontendPort"
+    name = local.frontend_port_name
     port = 80
   }
 
   frontend_port {
-    name = "httpPort"
+    name = "httpsPort"
     port = 443
   }
 
   backend_address_pool {
-    name = "appGatewayBackendPool"
+    name = local.backend_address_pool_name
   }
 
   backend_http_settings {
-    name                  = "backend-http-setting"
+    name                  = local.backend_http_settings_name
     cookie_based_affinity  = "Disabled"
     path                  = "/"
     port                  = 80
     protocol              = "Http"
-    request_timeout       = 1
+    request_timeout       = 60
   }
 
   http_listener {
-    name                           = "httpListener"
-    frontend_ip_configuration_name = "frontend-ip"
-    frontend_port_name             = "frontendPort"
+    name                           = local.http_listener_name
+    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = local.frontend_port_name
     protocol                       = "Http"
   }
 
   request_routing_rule {
-    name                       = "httpRule"
+    name                       = local.request_routing_rule_name
     rule_type                  = "Basic"
-    priority                   = 100
-    http_listener_name         = "httpListener"
-    backend_address_pool_name  = "appGatewayBackendPool"
-    backend_http_settings_name = "backend-http-setting"
+    http_listener_name         = local.http_listener_name
+    backend_address_pool_name  = local.backend_address_pool_name
+    backend_http_settings_name = local.backend_http_settings_name
+    priority                   = 1
   }
 
   depends_on = [
-    var.resource_group_name,
-    var.vnet_appgw_subnet_id,
     azurerm_public_ip.appgw_pip
   ]
 }

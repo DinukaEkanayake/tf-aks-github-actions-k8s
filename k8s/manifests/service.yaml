@@ -10,4 +10,3 @@ spec:
   - protocol: TCP
     port: 80 #The port that the service exposes inside the cluster.
     targetPort: 80 #The port inside the Pods where traffic should be directed.
-  type: ClusterIP

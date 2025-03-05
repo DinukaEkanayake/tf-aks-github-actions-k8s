@@ -13,11 +13,11 @@ output "acr_password" {
   sensitive = true
 }
 
-output "aks_principal_id" {
-  value = module.aks-cluster.aks_principal_id
+output "kubelet_identity_object_id" {
+  value = module.aks-cluster.kubelet_identity_object_id
 }
 
 # Required to set IAM role on appgw subnet.
 output "aks_uai_appgw_object_id" { 
-  value = module.aks-cluster.aks_uai_appgw_object_id
+  value = module.aks-cluster.aks_uai_appgw_object_id #a9f2102f-ab80-47d2-b0ee-dfa8b6d588f3
 }
