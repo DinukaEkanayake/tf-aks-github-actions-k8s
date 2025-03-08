@@ -4,6 +4,7 @@ resource "azurerm_public_ip" "appgw_pip" {
   resource_group_name = var.resource_group_name
   allocation_method   = var.pip_allocation_method
   sku                 = var.pip_sku
+  zones = ["1", "2", "3"]  
 }
 
 # Create local variables for Application Gateway
@@ -25,8 +26,16 @@ resource "azurerm_application_gateway" "appgw" {
   sku {
   name = var.appgtw_sku_size
   tier = var.appgtw_sku_tier
-  capacity = var.appgtw_sku_capacity
   }
+
+  # Enable Autoscaling (Recommended for Zone Redundancy)
+  autoscale_configuration {
+    min_capacity = 2
+    max_capacity = 10
+  }
+
+  # Deploy App Gateway across 3 Availability Zones
+  zones = ["1", "2", "3"]  # Enables multi-zone deployment
 
   gateway_ip_configuration {
     name      = local.gateway_ip_configuration_name
