@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myapp-pvc
+  namespace: myapp
+spec:
+  accessModes:
+    - ReadWriteOnce  # Multiple Pods can read/write the same storage
+  resources:
+    requests:
+      storage: 5Gi  ## Requests 5GB of storage
+  storageClassName: azurefile ## Uses Azure File Storage

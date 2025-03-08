@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: myapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: platformengtestregistry.azurecr.io/myrepository/myapp:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - name: app-environment
+            mountPath: /opt
+        # env:  #if want to use env instead of volumemounts
+          # - name: APP-ENV
+          #   valueFrom: 
+          #     configMapKeyRef:
+          #       name: myapp-config
+          #       key: APP_ENV
+          # - name: APP-SECRET
+          #   valueFrom: 
+          #     secretKeyRef:
+          #       name: myapp-secret
+          #       key: password
+        resources:
+          requests: #Minimum resources required for the container to start
+            cpu: "250m"
+            memory: "512Mi"
+          limits: #Maximum resources the container can consume.
+            cpu: "500m"
+            memory: "1Gi"
+      volumes:
+      - name: azure-storage #A PVC ensures data persists across Pod restarts, deletions, and rescheduling.
+        persistentVolumeClaim: #If a Pod crashes or restarts, any data inside its container is lost.
+          claimName: myapp-pvc #PVC Requests for storage by a Pod.PV is a Physical storage
+      - name: app-environment
+        configMap:
+          name: myapp-config

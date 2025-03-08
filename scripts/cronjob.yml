@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: CronJob #CronJob to automate recurring of cleanup the evicted pods.
+metadata:
+  name: pod-cleanup
+spec:
+  schedule: "0 * * * *"  #CronJob will run once every hour
+  jobTemplate:
+    spec:
+      template: #Every time the CronJob executes, it will create a pod based on this template.
+        spec:
+          containers:
+          - name: cleanup
+            image: bitnami/kubectl
+            command: ["/bin/sh", "-c", "script.sh"]
+          restartPolicy: OnFailure #pod will restart only if it fails

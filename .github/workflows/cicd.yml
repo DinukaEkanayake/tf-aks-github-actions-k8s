@@ -1,0 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+name: CICD pipeline
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source Code
+      uses: actions/checkout@v4.2.2
+
+    - name: Log in to Azure
+      id: login
+      uses: azure/login@v1.4.7
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Build & Push Docker Image
+      run: |
+        az acr login --name platformengtestregistry
+        docker build -t platformengtestregistry.azurecr.io/myrepository/myapp:latest .
+        docker push platformengtestregistry.azurecr.io/myrepository/myapp:latest
+
+    - name: Set AKS context
+      id: set-context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: '${{ secrets.resource_group }}' 
+        cluster-name: '${{ secrets.cluster_name }}'
+
+    - name: Setup kubectl
+      id: install-kubectl
+      uses: azure/setup-kubectl@v3
+
+    - name: Delete Old Kubernetes Manifests
+      continue-on-error: true  # Ensures the pipeline doesn't fail if resources don't exist
+      run: |
+        kubectl delete -f k8s/manifests --ignore-not-found=true
+
+    - name: Deploy all manifests in k8s/manifests folder
+      run: kubectl apply -f k8s/manifests
+
+    - name: Check Deployment Status
+      run: |
+        kubectl get pods -n myapp -o wide
+        kubectl get svc -n myapp -o wide
+
